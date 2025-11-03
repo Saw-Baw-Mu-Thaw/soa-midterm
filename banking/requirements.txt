@@ -1,0 +1,6 @@
+fastapi[all]
+pydantic
+sqlmodel
+pymysql
+python-jose[cryptography]
+pwdlib[argon2]

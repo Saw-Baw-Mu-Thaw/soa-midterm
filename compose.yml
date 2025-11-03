@@ -1,0 +1,89 @@
+services:
+  mysql-server:
+    image : mysql:8.4.2
+    platform : linux/x86-64
+    ports: 
+      - 3399:3306
+    restart : always
+    volumes : 
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/sql/:/docker-entrypoint-initdb.d/
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+
+  phpyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - 8888:80
+    restart: always
+    environment:
+      - PMA_HOST=mysql-server
+    depends_on:
+      - "mysql-server"
+
+  banking:
+    build: ./banking
+    restart : always
+    ports : 
+      - 8001:8080
+    depends_on:
+      - "mysql-server"
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@mysql-server/ibanking_db?charset=utf8mb4
+    
+  main:
+    build: ./api-gateway
+    restart : always
+    ports : 
+      - 8000:8080
+    depends_on:   
+      - "banking"
+      - "mysql-server"
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@mysql-server/ibanking_db?charset=utf8mb4
+      - SECRET_KEY=MY_SUPER_SECRET_KEY
+      - ALGORITHM=HS256
+      - BANKING_URL=http://banking:8080/
+      - OTP_URL=http://otp:8080/
+      - EMAIL_URL=http://email:8080/
+
+  otp:
+    build: ./otp
+    restart : always
+    ports:
+      - 8002:8080
+    depends_on:
+      - "main"
+    environment:
+      - TRANSACTION_SERVICE_URL=http://main:8080/
+      - BANKING_URL=http://banking:8080/
+      - EMAIL_SERVICE_URL=http://email:8080/
+      - OTP_URL=http://otp:8080/
+      - OTP_TTL_SECONDS=300
+      - MAX_OTP_ATTEMPTS=5
+      
+  email:
+    build: ./email
+    restart : always
+    ports :
+      - 8003:8080
+    depends_on:
+      - "main"
+      - "otp"
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:root@mysql-server/ibanking_db?charset=utf8mb4
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=webfinal2005@gmail.com
+      - SMTP_PASS=quxcufvyaskpreah
+      - TRANSACTION_SERVICE_URL=http://main:8080/
+      - BANKING_URL=http://banking:8080/
+      - OTP_URL=http://otp:8080/
+
+  www:
+    build: ./www
+    restart: always
+    ports:
+      - 8080:80

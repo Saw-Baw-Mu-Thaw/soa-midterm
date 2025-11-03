@@ -1,0 +1,5 @@
+fastapi[all]
+pydantic
+sqlmodel
+pymysql
+requests

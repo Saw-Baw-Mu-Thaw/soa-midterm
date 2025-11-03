@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuition Payment - iBanking</title>
+    <link rel="stylesheet" href="payment_form_styles.css">
+</head>
+
+<body>
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">iBanking</div>
+            <nav class="nav-menu">
+                <a href="payment_form.html" class="nav-link active">Make Payment</a>
+                <a href="transaction_history.html" class="nav-link">Transaction History</a>
+            </nav>
+            <div class="user-section">
+                <div class="user-details">
+                    <div class="user-name" id="headerUserName">John Doe</div>
+                    <div class="user-balance">Balance: <span id="headerBalance">4,600,000 đ</span></div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="payment-container">
+            <div class="payment-card">
+                <h1 class="page-title">Tuition Payment</h1>
+                <p class="page-subtitle">Pay tuition fees for TDTU students</p>
+
+                <form id="paymentForm">
+                    <!-- Section 1: Payer Information (Auto-filled and locked) -->
+                    <section class="form-section payer-section">
+                        <h2 class="section-title">Payer Information</h2>
+                        <div class="info-grid">
+                            <div class="info-row">
+                                <label class="info-label">Full Name:</label>
+                                <div class="info-value" id="payerName">John Doe</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Phone Number:</label>
+                                <div class="info-value" id="payerPhone">0901234567</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Email:</label>
+                                <div class="info-value" id="payerEmail">john.doe@email.com</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Available Balance:</label>
+                                <div class="info-value balance-highlight" id="payerBalance">4.600.000 đ</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 2: Student/Tuition Information -->
+                    <section class="form-section student-section">
+                        <h2 class="section-title">Student Information</h2>
+
+                        <div class="form-group">
+                            <label for="studentId">Student ID (MSSV)</label>
+                            <div class="input-with-button">
+                                <input type="text" id="studentId" name="studentId"
+                                    placeholder="Enter student ID (e.g., 523K0077)" maxlength="8" required>
+                                <button type="button" class="lookup-btn" onclick="lookupStudent()">Lookup</button>
+                            </div>
+                            <small class="field-hint">Enter the student ID to retrieve tuition information</small>
+                        </div>
+
+                        <!-- Student Details (Initially hidden, shown after lookup) -->
+                        <div id="studentDetails" class="student-details" style="display: none;">
+                            <div class="info-row">
+                                <label class="info-label">Student Name:</label>
+                                <div class="info-value" id="studentName">-</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Program:</label>
+                                <div class="info-value" id="studentProgram">-</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Tuition Amount:</label>
+                                <div class="info-value tuition-amount" id="tuitionAmount">-</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Semester:</label>
+                                <div class="info-value" id="semester">-</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Academic Year:</label>
+                                <div class="info-value" id="academicYear">-</div>
+                            </div>
+                            <div class="info-row">
+                                <label class="info-label">Due Date:</label>
+                                <div class="info-value" id="dueDate">-</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 3: Terms & Conditions -->
+                    <section class="form-section terms-section">
+                        <h3 class="terms-title">Terms & Conditions:</h3>
+                        <ul class="terms-list">
+                            <li>Only full tuition payment is allowed</li>
+                            <li>Payment is final and cannot be reversed</li>
+                            <li>OTP will be sent to your registered email</li>
+                            <li>OTP expires in 5 minutes</li>
+                        </ul>
+                    </section>
+
+                    <!-- Sample Student IDs Info Box -->
+                    <section class="info-box">
+                        <h3 class="info-box-title">Sample Student IDs:</h3>
+                        <p class="info-box-text">523K0077, 523K0034</p>
+                    </section>
+
+                    <!-- Error/Success Messages -->
+                    <div id="messageBox" class="message-box" style="display: none;"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                        <!-- CHANGED: type="submit" to type="button" -->
+                        <button type="button" class="btn btn-primary" id="confirmBtn" disabled>
+                            Confirm Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- OTP Modal (Hidden by default, shown after payment confirmation) -->
+    <div id="otpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Enter OTP Code</h2>
+                <span class="close-modal" onclick="closeOtpModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="otp-instruction">
+                    An OTP code has been sent to <strong id="otpEmail">your email</strong>.<br>
+                    Please enter the code below to complete the transaction.
+                </p>
+                <div class="form-group">
+                    <label for="otpCode">OTP Code</label>
+                    <input type="text" id="otpCode" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}">
+                </div>
+                <div class="otp-timer">
+                    <span>OTP expires in: <strong id="otpTimer">5:00</strong></span>\
+                    <button class="btn btn-secondary" onclick="resendOtp()">Resend OTP</button>
+                </div>
+                <div id="otpError" class="error-message" style="display: none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeOtpModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="verifyOtp()">Verify & Complete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="payment_form.js"></script>
+</body>
+
+</html>
