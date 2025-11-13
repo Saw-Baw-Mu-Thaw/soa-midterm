@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
 
-from config import SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER
+from .config import SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER
 
 
 app = FastAPI(title="Email Service", version="1.0")

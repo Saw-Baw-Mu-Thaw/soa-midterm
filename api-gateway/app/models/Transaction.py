@@ -15,7 +15,7 @@ class Transactions_DTO(SQLModel, table = True):
 
     transaction_id : int | None = Field(default=None, primary_key=True)
     payer_id : int | None = Field(default=None, foreign_key='customer.customer_id')
-    receiver_id : str | None = Field(default=None, foreign_key='customer.student_id')
+    receiver_id : str | None = Field(default=None, foreign_key='tuition_debt.student_id')
     debt_id : int | None = Field(default=None, foreign_key='tuition_debt.debt_id')
     amount : int | None = Field(default=None)
     status : str | None = Field(default='PENDING')

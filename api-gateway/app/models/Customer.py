@@ -12,7 +12,6 @@ class Customers_DTO(SQLModel, table = True):
     __tablename__ = 'customer'
 
     customer_id : int | None = Field(default=None, primary_key=True)
-    student_id : str = Field(default=None, unique=True)
     username : str = Field(default=None, unique=True)
     password_hash : str = Field(default=None)
     full_name : str = Field(default=None)
@@ -25,7 +24,6 @@ class Customers_DTO(SQLModel, table = True):
 
 class Customer(BaseModel):
     customer_id : int | None = Field(gt=0, le=MAX_DIGIT_11)
-    student_id : str | None = Field(max_length=8, min_length=8)
     username : str | None = Field(max_length=50)
     password_hash : str | None = Field(max_length=200, min_length=1)
     full_name : str | None = Field(max_length=50, min_length=1)

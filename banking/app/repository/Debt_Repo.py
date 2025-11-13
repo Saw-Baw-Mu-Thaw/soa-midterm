@@ -9,11 +9,11 @@ def get_session():
     with Session(engine) as session:
         return session
     
-def get_debt(cust_id : int) -> Tuition_Debt_DTO:
+def get_debt(student_id : str) -> Tuition_Debt_DTO:
     # get the tution_debt row that is UNPAID associated with customer Id
     session = get_session()
 
-    statement = select(Tuition_Debt_DTO).where(Tuition_Debt_DTO.customer_id == cust_id).where(Tuition_Debt_DTO.status == "UNPAID")
+    statement = select(Tuition_Debt_DTO).where(Tuition_Debt_DTO.student_id == student_id).where(Tuition_Debt_DTO.status == "UNPAID")
     results = session.exec(statement)
     debt = results.first()
     
@@ -21,9 +21,9 @@ def get_debt(cust_id : int) -> Tuition_Debt_DTO:
 
     return debt
 
-def set_debt_paid(cust_id : int) -> None:
+def set_debt_paid(student_id : str) -> None:
     # update the debt row of customer id
-    debt = get_debt(cust_id)
+    debt = get_debt(student_id)
     debt.status = "PAID"
     debt.paid_date = datetime.now()
     debt.updated_at = datetime.now()

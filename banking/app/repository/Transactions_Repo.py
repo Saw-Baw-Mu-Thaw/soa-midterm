@@ -3,6 +3,7 @@ from sqlmodel import Session, create_engine, select
 from ..models.Transaction import Transactions_DTO
 from datetime import datetime
 from ..repository import Debt_Repo, Cust_Repo
+from ..models.Tuition_Debt import Tuition_Debt_DTO
 
 engine = create_engine(cfg.DATABASE_URL)
 
@@ -82,9 +83,9 @@ def complete_transaction(transaction_id : int):
     if receiver is None:
         return False
     
-    receiver_debt = Debt_Repo.get_debt(receiver.customer_id)
+    receiver_debt = Debt_Repo.get_debt(receiver.student_id)
     tuition_amount = receiver_debt.amount
-    Debt_Repo.set_debt_paid(receiver.customer_id)
+    Debt_Repo.set_debt_paid(receiver.student_id)
 
     # reduce payer's balance
     payer_id = transaction.payer_id
@@ -124,15 +125,16 @@ def fail_transaction(transaction_id : int, reason : str = None):
     return True 
     
 def get_all_transaction(username : str):
-    # get all transactions where user is a payer or a receiver or both
+    # get all transactions where user is a payer
     cust = Cust_Repo.get_cust_info_by_username(username)
     if cust is None:
         return None
     
+    
     session = get_session()
 
     statement = select(Transactions_DTO).where(
-        (Transactions_DTO.receiver_id == cust.student_id) | (Transactions_DTO.payer_id == cust.customer_id)
+        (Transactions_DTO.payer_id == cust.customer_id)
         ).distinct()
     
     results = session.exec(statement)

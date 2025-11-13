@@ -13,7 +13,7 @@ class Tuition_Debt_DTO(SQLModel, table = True):
     __tablename__ = 'tuition_debt'
 
     debt_id : int | None = Field(default=None, primary_key=True)
-    customer_id : int | None = Field(default=None, foreign_key='customer.customer_id')
+    student_id : str | None = Field(default=None)
     amount : int | None = Field(default=0)
     semester : str | None = Field(default=None)
     academic_year : str | None = Field(default=None)
@@ -28,7 +28,7 @@ class Tuition_Debt_DTO(SQLModel, table = True):
 
 class Tuition_Debt(BaseModel):
     debt_id : int | None = Field(gt=0, le=MAX_DIGIT_11)
-    customer_id : int | None = Field(gt=0, le=MAX_DIGIT_11)
+    student_id : str | None = Field(max_length=8, min_length=8)
     amount : int | None = Field(default=0, le=MAX_DIGIT_12)
     semester : str | None = Field(max_length=20)
     academic_year : str | None = Field(max_length=10)
