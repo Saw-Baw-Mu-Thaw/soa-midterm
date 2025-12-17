@@ -82,16 +82,18 @@ CREATE TABLE `tuition_debt` (
   `due_date` datetime DEFAULT NULL,
   `paid_date` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `full_name` varchar(50) NOT NULL,
+  `program` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tuition_debt`
 --
 
-INSERT INTO `tuition_debt` (`debt_id`, `student_id`, `amount`, `semester`, `academic_year`, `status`, `due_date`, `paid_date`, `created_at`, `updated_at`) VALUES
-(1, '523K0077', 2500000, 'SEMESTER 1', '2025-2026', 'UNPAID', '2025-12-30 18:00:00', NULL, '2025-10-30 19:57:17', NULL),
-(2, '523K0034', 2500000, 'SEMESTER 2', '2025-2026', 'UNPAID', '2025-12-30 18:00:00', NULL, '2025-10-30 19:57:17', NULL);
+INSERT INTO `tuition_debt` (`debt_id`, `student_id`, `amount`, `semester`, `academic_year`, `status`, `due_date`, `paid_date`, `created_at`, `updated_at`, `full_name`, `program`) VALUES
+(1, '523K0077', 2500000, 'SEMESTER 1', '2025-2026', 'UNPAID', '2025-12-30 18:00:00', NULL, '2025-10-30 19:57:17', NULL, 'Saw Baw Mu Thaw', 'Software Engineering'),
+(2, '523K0034', 2500000, 'SEMESTER 2', '2025-2026', 'UNPAID', '2025-12-30 18:00:00', NULL, '2025-10-30 19:57:17', NULL, 'Saw Harry', 'Software Engineering');
 
 --
 -- Indexes for dumped tables

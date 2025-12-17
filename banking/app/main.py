@@ -21,12 +21,22 @@ def get_customer_by_name(username : str):
 @app.get('/banking/receiver/{student_id}')
 def get_customer_by_student_id(student_id : str):
 
-    debt = Debt_Repo.get_debt(student_id)
+    result = Debt_Repo.get_debt(student_id)
 
-    if debt is None:
+    if result is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer with student id not found")
 
-    response = {'Debt' : debt.model_dump()}
+    debt = {'debt_id' : result.debt_id,
+            'amount' : result.amount,
+            'semester' : result.semester,
+            'academic_year' : result.academic_year,
+            'due_date' : result.due_date,
+            'status' : result.status}
+    customer = {'student_id' : result.student_id,
+                'full_name' : result.full_name,
+                'program' : result.program}
+    
+    response = {'Debt' : debt, 'Customer' : customer}
 
     return response
 

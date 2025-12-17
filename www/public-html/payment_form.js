@@ -167,7 +167,12 @@ async function lookupStudent() {
                     'Content-Type': 'application/json'
                 }
             }
-        );
+        ).catch(() => {
+            showMessage('Failed to retrieve student information. Please check if the backend is running.', 'error');
+            hideStudentInformation();
+            const confirmBtn = document.getElementById('confirmBtn');
+            if (confirmBtn) confirmBtn.disabled = true;
+        });
 
         console.log('Student response status:', response.status);
 

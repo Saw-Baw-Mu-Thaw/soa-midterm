@@ -1,6 +1,7 @@
 from ..repository import config as cfg
 from sqlmodel import Session, create_engine, select
 from ..models.Tuition_Debt import Tuition_Debt_DTO
+from ..models.Customer import Customers_DTO
 from datetime import datetime
 
 engine = create_engine(cfg.DATABASE_URL)
@@ -15,11 +16,11 @@ def get_debt(student_id : str) -> Tuition_Debt_DTO:
 
     statement = select(Tuition_Debt_DTO).where(Tuition_Debt_DTO.student_id == student_id).where(Tuition_Debt_DTO.status == "UNPAID")
     results = session.exec(statement)
-    debt = results.first()
+    res = results.first()
     
     session.close()
 
-    return debt
+    return res
 
 def set_debt_paid(student_id : str) -> None:
     # update the debt row of customer id

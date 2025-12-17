@@ -22,6 +22,8 @@ class Tuition_Debt_DTO(SQLModel, table = True):
     paid_date : datetime = Field(default=None)
     created_at : datetime | None = Field(default=datetime.now())
     updated_at : datetime = Field(default=None)
+    full_name : str | None = Field(default=None)
+    program : str | None = Field(default=None)
     
 
 # This class will be used to transfer and access data
@@ -37,3 +39,5 @@ class Tuition_Debt(BaseModel):
     paid_date : datetime | None = None
     created_at : datetime | None = None
     updated_at : datetime | None = None
+    full_name : datetime | None = None
+    program : str | None = None
